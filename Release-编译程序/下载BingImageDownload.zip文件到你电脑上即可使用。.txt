@@ -1,0 +1,3 @@
+下载BingImageDownload.zip文件到你电脑上，解压后即可使用。
+详见ReadMe.md文件说明。
+感谢支持
