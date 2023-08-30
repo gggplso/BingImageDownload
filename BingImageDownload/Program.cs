@@ -22,7 +22,7 @@ namespace BingImageDownload
                     Console.WriteLine("未找到配置文件，开始初始化程序……");
                     StringBuilder stringBuilder = new StringBuilder();
                     stringBuilder.AppendLine("【版权】仅限于壁纸使用。它们是受版权保护的图像，因此您不应将其用于其他目的，但可以将其用作桌面壁纸。");
-                    stringBuilder.AppendLine("【说明】\nPixelResolution=UHD表示下载高分辨率的图片，比如3840x2160，其他值为默认的，比如1920x1080。\nFileNameLanguageIsEnglish=false表示文件名用中文，=true表示文件名用英文。\nDownloadPath=设置保存的路径，不配置则保存到程序所在目录。\nNetWaitTime=2000表示若网络中断尝试重新连接等待的时间为2秒。NetRetryCount=5表示连接网络最大重试次数为5次。\nAutoExit=1表示程序运行完自动退出。ExitTime=3000表示退出时等待时间为3秒。");
+                    stringBuilder.AppendLine("【说明】\nurl6=&qlt=100表示下载同分辨率下的大文件，若不想下载大文件则留空。\nPixelResolution=UHD表示下载高分辨率的图片，比如3840x2160，其他值为默认的，比如1920x1080。\nFileNameLanguageIsEnglish=false表示文件名用中文，=true表示文件名用英文。\nDownloadPath=设置保存的路径，不配置则保存到程序所在目录。\nNetWaitTime=2000表示若网络中断尝试重新连接等待的时间为2秒。NetRetryCount=5表示连接网络最大重试次数为5次。\nAutoExit=1表示程序运行完自动退出。ExitTime=3000表示退出时等待时间为3秒。");
                     stringBuilder.AppendLine("【辅助】Win11系统添加到开机启动项：\n在本程序文件BingImageDownload.exe点击右键-发送到桌面快捷方式。\n在系统开始菜单上点击右键-运行，输入shell:startup回车确定系统自动打开一文件夹：开始菜单-程序-启动.\\Start Menu\\Programs\\Startup\n将刚才桌面上创建的快捷方式拖入到此文件夹中即可。");
                     stringBuilder.AppendLine();
                     stringBuilder.AppendLine("[BingApiUrl]");
@@ -31,6 +31,7 @@ namespace BingImageDownload
                     stringBuilder.AppendLine("url3=/HPImageArchive.aspx?format=js&cc=cn&idx=");
                     stringBuilder.AppendLine("url4=&n=");
                     stringBuilder.AppendLine("url5=&video=1");
+                    stringBuilder.AppendLine("url6=&qlt=100");
                     stringBuilder.AppendLine("DaysAgo=0");
                     stringBuilder.AppendLine("AFewDays=1");
                     stringBuilder.AppendLine();
@@ -116,6 +117,7 @@ namespace BingImageDownload
                 intNetRetryCount = Int32.TryParse(IniHelper.IniRead("NetworkInformation", "NetRetryCount", ShareClass._iniFilePath, "5"), out intNetRetryCount) ? intNetRetryCount : 5;
                 int intExitTime;
                 intExitTime = Int32.TryParse(IniHelper.IniRead("OtherSetting", "ExitTime", ShareClass._iniFilePath, "3000"), out intExitTime) ? intExitTime : 3000;
+                string strUrl6 = IniHelper.IniRead("BingApiUrl", "url6", ShareClass._iniFilePath, "");
                 Console.WriteLine("配置文件读取完毕，开始测试网络连接……");
                 bool isSuccess = false;
                 int intCount = 0;
@@ -158,12 +160,14 @@ namespace BingImageDownload
                     Dictionary<string, List<string>> dicEveryDayInformation = ShareClass.GetJsonToBing(strJson, isUHD);
                     string strStatus = string.Empty;
                     isSuccess = dicEveryDayInformation.Count < 1 ? false : isSuccess;
+                    string strDownloadUrl;
                     foreach (List<string> item in dicEveryDayInformation.Values)
                     {
                         try
                         {
                             Console.WriteLine(item[3]);
-                            ShareClass.DownloadFile(item[0], Path.Combine(strPath, (item[3] + " " + item[intLanguage])));
+                            strDownloadUrl = item[0] + strUrl6;
+                            ShareClass.DownloadFile(strDownloadUrl, Path.Combine(strPath, (item[3] + " " + item[intLanguage])));
                             if (dicEveryDayInformation.Count > 1)
                             {
                                 Thread.Sleep(5000);
