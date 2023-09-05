@@ -179,7 +179,7 @@ namespace BingImageDownload
                             {
                                 Thread.Sleep(5000);
                             }
-                            strStatus = $"文件 ：{item[intLanguage]}\n下载完成." + item[0];
+                            strStatus = $"文件 ：{item[intLanguage]}\n下载完成." + strDownloadUrl;
                             LogHelper.Log(strStatus);
                             Console.WriteLine(strStatus);
                             isSuccess = true;
@@ -224,23 +224,26 @@ namespace BingImageDownload
                         Directory.GetFiles(strSourcePath, "*", SearchOption.TopDirectoryOnly).ToList().ForEach(x =>
                         {
                             string strFileName = Path.GetFileName(x);
-                            using (FileStream fsRead = new FileStream(x, FileMode.Open))
+                            if (new FileInfo(x).Length > (1024 * 50))
                             {
-                                byte[] buffer = new byte[1024 * 1024 * 1];
-                                using (FileStream fsWrite = new FileStream(Path.Combine(strPath, (strFileName + ".png")), FileMode.Create))
+                                using (FileStream fsRead = new FileStream(x, FileMode.Open))
                                 {
-                                    while (true)
+                                    byte[] buffer = new byte[1024 * 1024 * 1];
+                                    using (FileStream fsWrite = new FileStream(Path.Combine(strPath, (strFileName + ".jpg")), FileMode.Create))
                                     {
-                                        int i = fsRead.Read(buffer, 0, buffer.Length);
-                                        if (i > 0)
+                                        while (true)
                                         {
-                                            fsWrite.Write(buffer, 0, i);
-                                        }
-                                        else
-                                        {
-                                            Console.WriteLine("复制完成。");
-                                            intSpotlightCount++;
-                                            break;
+                                            int i = fsRead.Read(buffer, 0, buffer.Length);
+                                            if (i > 0)
+                                            {
+                                                fsWrite.Write(buffer, 0, i);
+                                            }
+                                            else
+                                            {
+                                                Console.WriteLine("复制完成。");
+                                                intSpotlightCount++;
+                                                break;
+                                            }
                                         }
                                     }
                                 }
