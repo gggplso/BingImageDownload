@@ -24,6 +24,7 @@ namespace BingImageDownload
                     stringBuilder.AppendLine("【版权】仅限于壁纸使用。它们是受版权保护的图像，因此您不应将其用于其他目的，但可以将其用作桌面壁纸。");
                     stringBuilder.AppendLine("【说明】\nurl6=&qlt=100表示下载同分辨率下的大文件，若不想下载大文件则留空。\nPixelResolution=UHD表示下载高分辨率的图片，比如3840x2160，其他值为默认的，比如1920x1080。\nFileNameLanguageIsEnglish=false表示文件名用中文，=true表示文件名用英文。\nDownloadPath=设置保存的路径，不配置则保存到程序所在目录。\nNetWaitTime=2000表示若网络中断尝试重新连接等待的时间为2秒。NetRetryCount=5表示连接网络最大重试次数为5次。\nAutoExit=1表示程序运行完自动退出。ExitTime=3000表示退出时等待时间为3秒。");
                     stringBuilder.AppendLine("【辅助】Win11系统添加到开机启动项：\n在本程序文件BingImageDownload.exe点击右键-发送到桌面快捷方式。\n在系统开始菜单上点击右键-运行，输入shell:startup回车确定系统自动打开一文件夹：开始菜单-程序-启动.\\Start Menu\\Programs\\Startup\n将刚才桌面上创建的快捷方式拖入到此文件夹中即可。");
+                    stringBuilder.AppendLine("【额外】添加了复制Windows聚焦图片到指定的目录。");
                     stringBuilder.AppendLine();
                     stringBuilder.AppendLine("[BingApiUrl]");
                     stringBuilder.AppendLine("url1=https://");
@@ -47,6 +48,9 @@ namespace BingImageDownload
                     stringBuilder.AppendLine("[OtherSetting]");
                     stringBuilder.AppendLine("AutoExit=1");
                     stringBuilder.AppendLine("ExitTime=3000");
+                    stringBuilder.AppendLine();
+                    stringBuilder.AppendLine("[WindowsSpotlight]");
+                    stringBuilder.AppendLine("Switch=on");
                     File.WriteAllText(ShareClass._iniFilePath, stringBuilder.ToString(), Encoding.UTF8);
 
                     if (File.Exists(ShareClass._iniFilePath))
@@ -63,6 +67,7 @@ namespace BingImageDownload
                 Console.WriteLine("Hello World!");
                 Console.WriteLine();
                 Console.WriteLine("配置文件读取中……");
+
                 int intIDX;
                 int intN;
                 if (Int32.TryParse(IniHelper.IniRead("BingApiUrl", "DaysAgo", ShareClass._iniFilePath, "0"), out intIDX))
@@ -118,6 +123,8 @@ namespace BingImageDownload
                 int intExitTime;
                 intExitTime = Int32.TryParse(IniHelper.IniRead("OtherSetting", "ExitTime", ShareClass._iniFilePath, "3000"), out intExitTime) ? intExitTime : 3000;
                 string strUrl6 = IniHelper.IniRead("BingApiUrl", "url6", ShareClass._iniFilePath, "");
+                string strSpotlight = IniHelper.IniRead("WindowsSpotlight", "Switch", ShareClass._iniFilePath);
+
                 Console.WriteLine("配置文件读取完毕，开始测试网络连接……");
                 bool isSuccess = false;
                 int intCount = 0;
@@ -189,7 +196,6 @@ namespace BingImageDownload
                         }
                     }
                 }
-
                 if (isSuccess)
                 {
                     Console.WriteLine();
@@ -206,6 +212,52 @@ namespace BingImageDownload
                     Console.WriteLine("文件下载出错，请到程序目录的Log文件中查看日志文件，分析出错原因。");
                     Console.WriteLine();
                     Console.ForegroundColor = ConsoleColor.White;
+                }
+                if (strSpotlight == "on")
+                {
+                    Console.WriteLine("开始复制Windows聚焦图片……");
+                    int intSpotlightCount = 0;
+                    string strMessage = string.Empty;
+                    string strSourcePath = Environment.ExpandEnvironmentVariables(@"%USERPROFILE%\AppData\Local\Packages\Microsoft.Windows.ContentDeliveryManager_cw5n1h2txyewy\LocalState\Assets\");
+                    if (Directory.Exists(strSourcePath))
+                    {
+                        Directory.GetFiles(strSourcePath, "*", SearchOption.TopDirectoryOnly).ToList().ForEach(x =>
+                        {
+                            string strFileName = Path.GetFileName(x);
+                            using (FileStream fsRead = new FileStream(x, FileMode.Open))
+                            {
+                                byte[] buffer = new byte[1024 * 1024 * 1];
+                                using (FileStream fsWrite = new FileStream(Path.Combine(strPath, (strFileName + ".png")), FileMode.Create))
+                                {
+                                    while (true)
+                                    {
+                                        int i = fsRead.Read(buffer, 0, buffer.Length);
+                                        if (i > 0)
+                                        {
+                                            fsWrite.Write(buffer, 0, i);
+                                        }
+                                        else
+                                        {
+                                            Console.WriteLine("复制完成。");
+                                            intSpotlightCount++;
+                                            break;
+                                        }
+                                    }
+                                }
+                            }
+                        });
+                    }
+                    if (intSpotlightCount > 0)
+                    {
+                        strMessage = string.Format("Windows聚焦图片复制完成，共{0}个文件。", intSpotlightCount);
+                    }
+                    else
+                    {
+                        strMessage = "Windows聚焦目录图片不存在，请检查你的操作系统是否支持锁屏设置为Windows聚焦。";
+                    }
+                    LogHelper.Log(strMessage);
+                    Console.WriteLine(strMessage);
+                    Console.WriteLine();
                 }
                 Console.WriteLine("程序即将退出");
                 Console.ForegroundColor = ConsoleColor.White;
