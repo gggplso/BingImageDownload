@@ -167,19 +167,20 @@ namespace BingImageDownload
                     Dictionary<string, List<string>> dicEveryDayInformation = ShareClass.GetJsonToBing(strJson, isUHD);
                     string strStatus = string.Empty;
                     isSuccess = dicEveryDayInformation.Count < 1 ? false : isSuccess;
-                    string strDownloadUrl;
+                    string strDownloadUrl, strNewFileName;
                     foreach (List<string> item in dicEveryDayInformation.Values)
                     {
                         try
                         {
                             Console.WriteLine(item[3]);
                             strDownloadUrl = item[0] + strUrl6;
-                            ShareClass.DownloadFile(strDownloadUrl, Path.Combine(strPath, (item[3] + " " + item[intLanguage])));
+                            strNewFileName = item[3] + " " + item[intLanguage];
+                            ShareClass.DownloadFile(strDownloadUrl, Path.Combine(strPath, strNewFileName));
                             if (dicEveryDayInformation.Count > 1)
                             {
                                 Thread.Sleep(5000);
                             }
-                            strStatus = $"文件 ：{item[intLanguage]}\n下载完成." + strDownloadUrl;
+                            strStatus = $"{strNewFileName}\n下载完成." + strDownloadUrl;
                             LogHelper.Log(strStatus);
                             Console.WriteLine(strStatus);
                             isSuccess = true;

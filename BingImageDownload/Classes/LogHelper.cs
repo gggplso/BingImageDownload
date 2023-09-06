@@ -71,7 +71,7 @@ namespace BingImageDownload.Classes
             {
                 Directory.CreateDirectory(strPath);
             }
-            string fileName = logType.ToString() + "Log" + DateTime.Now.ToString("yyyyMMdd");
+            string fileName = logType.ToString() + "Log" + DateTime.Now.ToString("yyyyMM");
             string[] fileOldLogs = Directory.GetFiles(strPath, fileName + "*.txt", SearchOption.TopDirectoryOnly);
             if (fileOldLogs.Length < 1)
             {
