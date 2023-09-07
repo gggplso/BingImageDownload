@@ -51,20 +51,33 @@ namespace BingImageDownload.Classes
             }
             return dicEveryDayInformation;
         }
-        public static void DownloadFile(string strUrl, string strFile)
+        #region 异步会导致文件下载不全 不知道怎么解决这个问题（图片下载了部分，打开后只显示了一截图片）
+        //public static async Task DownloadFile(string strUrl, string filePath)
+        //{
+        //    try
+        //    {
+        //        filePath = string.IsNullOrEmpty(filePath) ? DateTime.Now.ToString("yyyy-MM-dd.jpg") : filePath;
+        //        Stream stream = await _client.GetStreamAsync(strUrl);
+        //        using (FileStream fsWrite = File.Create(filePath))
+        //        {
+        //            await stream.CopyToAsync(fsWrite);
+        //        }
+        //    }
+        //    catch (Exception e1)
+        //    {
+        //        LogHelper.GetExceptionLocation(e1);
+        //    }
+        //} 
+        #endregion
+        public static void DownloadFile(string strUrl, string filePath)
         {
             try
             {
-                Task.Run(async delegate ()
+                System.IO.Stream stream = _client.GetStreamAsync(strUrl).GetAwaiter().GetResult();
+                using (FileStream fsWrite = System.IO.File.Create(filePath))
                 {
-                    using (Stream stream = await ShareClass._client.GetStreamAsync(strUrl))
-                    {
-                        using (FileStream fs = File.Create(string.IsNullOrEmpty(strFile) ? DateTime.Now.ToString("yyyy-MM-dd.jpg") : strFile))
-                        {
-                            await stream.CopyToAsync(fs);
-                        }
-                    }
-                });
+                    stream.CopyTo(fsWrite);
+                }
             }
             catch (Exception e1)
             {

@@ -1,4 +1,5 @@
 ﻿using BingImageDownload.Classes;
+using System.Diagnostics;
 using System.Net.NetworkInformation;
 using System.Text;
 
@@ -168,19 +169,21 @@ namespace BingImageDownload
                     string strStatus = string.Empty;
                     isSuccess = dicEveryDayInformation.Count < 1 ? false : isSuccess;
                     string strDownloadUrl, strNewFileName;
+                    DateTime dtStart, dtEnd;
+                    Stopwatch stopwatch = new Stopwatch();
+                    int intBingCount = 0;
+                    stopwatch.Start();
                     foreach (List<string> item in dicEveryDayInformation.Values)
                     {
                         try
                         {
-                            Console.WriteLine(item[3]);
                             strDownloadUrl = item[0] + strUrl6;
                             strNewFileName = item[3] + " " + item[intLanguage];
+                            dtStart = DateTime.Now;
+                            //Task.Run(async delegate () { await ShareClass.DownloadFile(strDownloadUrl, Path.Combine(strPath, strNewFileName)).ConfigureAwait(false); });
                             ShareClass.DownloadFile(strDownloadUrl, Path.Combine(strPath, strNewFileName));
-                            if (dicEveryDayInformation.Count > 1)
-                            {
-                                Thread.Sleep(5000);
-                            }
-                            strStatus = $"{strNewFileName}\n下载完成." + strDownloadUrl;
+                            dtEnd = DateTime.Now;
+                            strStatus = string.Format($"{strNewFileName}\n下载完成." + strDownloadUrl + "耗时：{0}秒", dtEnd.Subtract(dtStart).TotalSeconds);
                             LogHelper.Log(strStatus);
                             Console.WriteLine(strStatus);
                             isSuccess = true;
@@ -195,7 +198,12 @@ namespace BingImageDownload
                             Console.WriteLine();
                             Console.ForegroundColor = ConsoleColor.White;
                         }
+                        intBingCount++;
                     }
+                    stopwatch.Stop();
+                    strStatus = string.Format("共下载Bing壁纸{0}个文件，总耗时{1}秒", intBingCount, stopwatch.Elapsed.TotalSeconds);
+                    LogHelper.Log(strStatus);
+                    Console.WriteLine(strStatus);
                 }
                 if (isSuccess)
                 {

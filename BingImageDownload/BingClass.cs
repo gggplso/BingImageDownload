@@ -15,7 +15,13 @@ namespace BingImageDownload
         public BingTooltips? tooltips { get; set; }
         public override string ToString()
         {
-            return string.Format($"images:{images}\r\ntooltips:{tooltips}");
+            //return string.Format($"{images}\n{tooltips}");
+            string strTemp = string.Empty;
+            foreach (var image in images)
+            {
+                strTemp += image.ToString() + "\n";
+            }
+            return string.Format($"{strTemp}\n{tooltips}");
         }
     }
     public class BingImage
@@ -35,6 +41,15 @@ namespace BingImageDownload
         public int? top { get; set; }
         public int? bot { get; set; }
         public List<BingHS>? hs { get; set; }
+        public override string ToString()
+        {
+            string strTemp = string.Empty;
+            foreach (var item in hs)
+            {
+                strTemp += item.ToString() + "\n";
+            }
+            return string.Format($"images:\n\tstartdate:{startdate}\n\tfullstartdate{fullstartdate}\n\tenddate:{enddate}\n\turl:{url}\n\turlbase:{urlbase}\n\tcopyright{copyright}\n\tcopyrightlink:{copyrightlink}\n\ttitle:{title}\n\tquiz:{quiz}\n\twp:{wp}\n\thsh:{hsh}\n\tdrk:{drk}\n\ttop:{top}\n\tbot:{bot}\n\ths:{strTemp}");
+        }
     }
     public class BingTooltips
     {
@@ -47,7 +62,7 @@ namespace BingImageDownload
         public string? pause { get; set; }
         public override string ToString()
         {
-            return string.Format($"tooltips:\r\n\tloading:{loading}\r\n\tprevious{previous}\r\n\tnext{next}\r\n\twalle{walle}\r\n\twalls{walls}\r\n\tplay{play}\r\n\tpause{pause}");
+            return string.Format($"tooltips:\n\tloading:{loading}\n\tprevious{previous}\n\tnext{next}\n\twalle{walle}\n\twalls{walls}\n\tplay{play}\n\tpause{pause}");
         }
     }
     public class BingHS
