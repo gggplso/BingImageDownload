@@ -164,7 +164,8 @@ namespace BingImageDownload
                 else
                 {
                     Console.WriteLine("网络连接通畅，开始下载文件……");
-                    string strJson = HttpHelper.Get(strUrl);
+                    //string strJson = HttpHelper.Get(strUrl);
+                    string strJson = ShareClass._client.GetStringAsync(strUrl).GetAwaiter().GetResult();
                     Dictionary<string, List<string>> dicEveryDayInformation = ShareClass.GetJsonToBing(strJson, isUHD);
                     string strStatus = string.Empty;
                     isSuccess = dicEveryDayInformation.Count < 1 ? false : isSuccess;
@@ -183,7 +184,7 @@ namespace BingImageDownload
                             //Task.Run(async delegate () { await ShareClass.DownloadFile(strDownloadUrl, Path.Combine(strPath, strNewFileName)).ConfigureAwait(false); });
                             ShareClass.DownloadFile(strDownloadUrl, Path.Combine(strPath, strNewFileName));
                             dtEnd = DateTime.Now;
-                            strStatus = string.Format($"{strNewFileName}\n下载完成." + strDownloadUrl + "耗时：{0}秒", dtEnd.Subtract(dtStart).TotalSeconds);
+                            strStatus = string.Format($"{strNewFileName}\n下载完成." + strDownloadUrl + " 耗时：{0}秒", dtEnd.Subtract(dtStart).TotalSeconds);
                             LogHelper.Log(strStatus);
                             Console.WriteLine(strStatus);
                             isSuccess = true;
