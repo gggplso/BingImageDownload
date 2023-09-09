@@ -15,7 +15,6 @@ namespace BingImageDownload
         public BingTooltips? tooltips { get; set; }
         public override string ToString()
         {
-            //return string.Format($"{images}\n{tooltips}");
             string strTemp = string.Empty;
             foreach (var image in images)
             {

@@ -23,7 +23,7 @@ namespace BingImageDownload
                     Console.WriteLine("未找到配置文件，开始初始化程序……");
                     StringBuilder stringBuilder = new StringBuilder();
                     stringBuilder.AppendLine("【版权】仅限于壁纸使用。它们是受版权保护的图像，因此您不应将其用于其他目的，但可以将其用作桌面壁纸。");
-                    stringBuilder.AppendLine("【说明】\nurl6=&qlt=100表示下载同分辨率下的大文件，若不想下载大文件则留空。\nPixelResolution=UHD表示下载高分辨率的图片，比如3840x2160，其他值为默认的，比如1920x1080。\nFileNameLanguageIsEnglish=false表示文件名用中文，=true表示文件名用英文。\nDownloadPath=设置保存的路径，不配置则保存到程序所在目录。\nNetWaitTime=2000表示若网络中断尝试重新连接等待的时间为2秒。NetRetryCount=5表示连接网络最大重试次数为5次。\nAutoExit=1表示程序运行完自动退出。ExitTime=3000表示退出时等待时间为3秒。");
+                    stringBuilder.AppendLine("【说明】\nurl6=&qlt=100表示下载同分辨率下的大文件，若不想下载大文件则留空。\nPixelResolution=UHD表示下载高分辨率的图片，比如3840x2160，其他值为默认的，比如1920x1080。\nFileNameLanguageIsEnglish=false表示文件名用中文，=true表示文件名用英文。\nDownloadPath=设置保存的路径，不配置则保存到程序所在目录。\nNetWaitTime=2000表示若网络中断尝试重新连接等待的时间为2秒。NetRetryCount=5表示连接网络最大重试次数为5次。\nAutoExit=true表示程序运行完自动退出。ExitTime=3000表示退出时等待时间为3秒。");
                     stringBuilder.AppendLine("【辅助】Win11系统添加到开机启动项：\n在本程序文件BingImageDownload.exe点击右键-发送到桌面快捷方式。\n在系统开始菜单上点击右键-运行，输入shell:startup回车确定系统自动打开一文件夹：开始菜单-程序-启动.\\Start Menu\\Programs\\Startup\n将刚才桌面上创建的快捷方式拖入到此文件夹中即可。");
                     stringBuilder.AppendLine("【额外】添加了复制Windows聚焦图片到指定的目录。");
                     stringBuilder.AppendLine();
@@ -47,7 +47,7 @@ namespace BingImageDownload
                     stringBuilder.AppendLine("NetRetryCount=5");
                     stringBuilder.AppendLine();
                     stringBuilder.AppendLine("[OtherSetting]");
-                    stringBuilder.AppendLine("AutoExit=1");
+                    stringBuilder.AppendLine("AutoExit=true");
                     stringBuilder.AppendLine("ExitTime=3000");
                     stringBuilder.AppendLine();
                     stringBuilder.AppendLine("[WindowsSpotlight]");
@@ -158,55 +158,55 @@ namespace BingImageDownload
                 }
                 if (intCount > 0 && intCount >= intNetRetryCount)
                 {
-                    Console.WriteLine($"无法访问 {strDomain} ，请检查网络。");
+                    Console.WriteLine($" {strDomain} 未响应，可能会影响文件下载，请检查网络。");
                     isSuccess = false;
                 }
                 else
                 {
                     Console.WriteLine("网络连接通畅，开始下载文件……");
-                    //string strJson = HttpHelper.Get(strUrl);
-                    string strJson = ShareClass._client.GetStringAsync(strUrl).GetAwaiter().GetResult();
-                    Dictionary<string, List<string>> dicEveryDayInformation = ShareClass.GetJsonToBing(strJson, isUHD);
-                    string strStatus = string.Empty;
-                    isSuccess = dicEveryDayInformation.Count < 1 ? false : isSuccess;
-                    string strDownloadUrl, strNewFileName;
-                    DateTime dtStart, dtEnd;
-                    Stopwatch stopwatch = new Stopwatch();
-                    int intBingCount = 0;
-                    stopwatch.Start();
-                    foreach (List<string> item in dicEveryDayInformation.Values)
-                    {
-                        try
-                        {
-                            strDownloadUrl = item[0] + strUrl6;
-                            strNewFileName = item[3] + " " + item[intLanguage];
-                            dtStart = DateTime.Now;
-                            //Task.Run(async delegate () { await ShareClass.DownloadFile(strDownloadUrl, Path.Combine(strPath, strNewFileName)).ConfigureAwait(false); });
-                            ShareClass.DownloadFile(strDownloadUrl, Path.Combine(strPath, strNewFileName));
-                            dtEnd = DateTime.Now;
-                            strStatus = string.Format($"{strNewFileName}\n下载完成." + strDownloadUrl + " 耗时：{0}秒", dtEnd.Subtract(dtStart).TotalSeconds);
-                            LogHelper.Log(strStatus);
-                            Console.WriteLine(strStatus);
-                            isSuccess = true;
-                        }
-                        catch (Exception e1)
-                        {
-                            LogHelper.GetExceptionLocation(e1);
-                            isSuccess = false;
-                            Console.WriteLine();
-                            Console.ForegroundColor = ConsoleColor.Red;
-                            Console.WriteLine("文件下载出错，请到程序目录的Log文件中查看日志文件，分析出错原因。");
-                            Console.WriteLine();
-                            Console.ForegroundColor = ConsoleColor.White;
-                        }
-                        intBingCount++;
-                    }
-                    stopwatch.Stop();
-                    strStatus = string.Format("共下载Bing壁纸{0}个文件，总耗时{1}秒", intBingCount, stopwatch.Elapsed.TotalSeconds);
-                    LogHelper.Log(strStatus);
-                    Console.WriteLine(strStatus);
                 }
-                if (isSuccess)
+                string strJson = ShareClass._client.GetStringAsync(strUrl).GetAwaiter().GetResult();
+                Dictionary<string, List<string>> dicEveryDayInformation = ShareClass.GetJsonToBing(strJson, isUHD);
+                string strStatus = string.Empty;
+                isSuccess = dicEveryDayInformation.Count < 1 ? false : isSuccess;
+                string strDownloadUrl, strNewFileName;
+                DateTime dtStart, dtEnd;
+                Stopwatch stopwatch = new Stopwatch();
+                int intBingCount = 0;
+                stopwatch.Start();
+                foreach (List<string> item in dicEveryDayInformation.Values)
+                {
+                    try
+                    {
+                        strDownloadUrl = item[0] + strUrl6;
+                        strNewFileName = item[3] + " " + item[intLanguage];
+                        dtStart = DateTime.Now;
+                        //Task.Run(async delegate () { await ShareClass.DownloadFile(strDownloadUrl, Path.Combine(strPath, strNewFileName)).ConfigureAwait(false); });
+                        ShareClass.DownloadFile(strDownloadUrl, Path.Combine(strPath, strNewFileName));
+                        dtEnd = DateTime.Now;
+                        strStatus = string.Format($"{strNewFileName}\n下载完成." + strDownloadUrl + " 耗时：{0}秒", dtEnd.Subtract(dtStart).TotalSeconds);
+                        LogHelper.Log(strStatus);
+                        Console.WriteLine(strStatus);
+                        isSuccess = true;
+                    }
+                    catch (Exception e1)
+                    {
+                        LogHelper.GetExceptionLocation(e1);
+                        isSuccess = false;
+                        Console.WriteLine();
+                        Console.ForegroundColor = ConsoleColor.Red;
+                        Console.WriteLine("文件下载出错，请到程序目录的Log文件中查看日志文件，分析出错原因。");
+                        Console.WriteLine();
+                        Console.ForegroundColor = ConsoleColor.White;
+                    }
+                    intBingCount++;
+                }
+                stopwatch.Stop();
+                strStatus = string.Format("共下载Bing壁纸{0}个文件，总耗时{1}秒", intBingCount, stopwatch.Elapsed.TotalSeconds);
+                LogHelper.Log(strStatus);
+                Console.WriteLine(strStatus);
+
+                if (intBingCount > 0)
                 {
                     Console.WriteLine();
                     Console.ForegroundColor = ConsoleColor.Red;
@@ -275,13 +275,13 @@ namespace BingImageDownload
                 Console.WriteLine("程序即将退出");
                 Console.ForegroundColor = ConsoleColor.White;
                 Thread.Sleep(intExitTime);
-                if (IniHelper.IniRead("OtherSetting", "AutoExit", ShareClass._iniFilePath) == "1")
+                if (IniHelper.IniRead("OtherSetting", "AutoExit", ShareClass._iniFilePath) == "true")
                 {
                     Console.WriteLine("配置文件中设置了自动退出。");
                 }
                 else
                 {
-                    Console.WriteLine("\n(若想程序自动退出，可以在配置文件中将AutoExit的值设置为1)\n按任意键退出程序。");
+                    Console.WriteLine("\n(若想程序自动退出，可以在配置文件中将AutoExit的值设置为true)\n按任意键退出程序。");
                     Console.ReadKey(true);
                 }
             }
