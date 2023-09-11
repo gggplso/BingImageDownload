@@ -23,7 +23,7 @@ namespace BingImageDownload
                     Console.WriteLine("未找到配置文件，开始初始化程序……");
                     StringBuilder stringBuilder = new StringBuilder();
                     stringBuilder.AppendLine("【版权】仅限于壁纸使用。它们是受版权保护的图像，因此您不应将其用于其他目的，但可以将其用作桌面壁纸。");
-                    stringBuilder.AppendLine("【说明】\nurl6=&qlt=100表示下载同分辨率下的大文件，若不想下载大文件则留空。\nPixelResolution=UHD表示下载高分辨率的图片，比如3840x2160，其他值为默认的，比如1920x1080。\nFileNameLanguageIsEnglish=false表示文件名用中文，=true表示文件名用英文。\nDownloadPath=设置保存的路径，不配置则保存到程序所在目录。\nNetWaitTime=2000表示若网络中断尝试重新连接等待的时间为2秒。NetRetryCount=5表示连接网络最大重试次数为5次。\nAutoExit=true表示程序运行完自动退出。ExitTime=3000表示退出时等待时间为3秒。");
+                    stringBuilder.AppendLine("【说明】\nurl6=&qlt=100表示下载同分辨率下的大文件，若不想下载大文件则留空。\nPixelResolution=UHD表示下载高分辨率的图片，比如3840x2160，其他值为默认的，比如1920x1080。\nFileNameLanguageIsEnglish=false表示文件名用中文，=true表示文件名用英文。\nOverwrite=true表示若有同名文件时重新下载覆盖原文件，其他值则保留原文件不重新下载。\nDownloadPath=设置保存的路径，不配置则保存到程序所在目录。\nNetWaitTime=2000表示若网络中断尝试重新连接等待的时间为2秒。NetRetryCount=5表示连接网络最大重试次数为5次。\nAutoExit=true表示程序运行完自动退出。ExitTime=3000表示退出时等待时间为3秒。");
                     stringBuilder.AppendLine("【辅助】Win11系统添加到开机启动项：\n在本程序文件BingImageDownload.exe点击右键-发送到桌面快捷方式。\n在系统开始菜单上点击右键-运行，输入shell:startup回车确定系统自动打开一文件夹：开始菜单-程序-启动.\\Start Menu\\Programs\\Startup\n将刚才桌面上创建的快捷方式拖入到此文件夹中即可。");
                     stringBuilder.AppendLine("【额外】添加了复制Windows聚焦图片到指定的目录。");
                     stringBuilder.AppendLine();
@@ -40,6 +40,7 @@ namespace BingImageDownload
                     stringBuilder.AppendLine("[DownloadSetting]");
                     stringBuilder.AppendLine("PixelResolution=UHD");
                     stringBuilder.AppendLine("FileNameLanguageIsEnglish=false");
+                    stringBuilder.AppendLine("Overwrite=true");
                     stringBuilder.AppendLine("DownloadPath=");
                     stringBuilder.AppendLine();
                     stringBuilder.AppendLine("[NetworkInformation]");
@@ -70,7 +71,6 @@ namespace BingImageDownload
                 Console.WriteLine("配置文件读取中……");
 
                 int intIDX;
-                int intN;
                 if (Int32.TryParse(IniHelper.IniRead("BingApiUrl", "DaysAgo", ShareClass._iniFilePath, "0"), out intIDX))
                 {
                     intIDX = intIDX < 0 ? 0 : (intIDX > 7 ? 7 : intIDX);
@@ -79,6 +79,7 @@ namespace BingImageDownload
                 {
                     intIDX = 0;
                 }
+                int intN;
                 if (Int32.TryParse(IniHelper.IniRead("BingApiUrl", "AFewDays", ShareClass._iniFilePath, "1"), out intN))
                 {
                     intN = intN < 0 ? 0 : (intN > 8 ? 8 : intN);
@@ -110,6 +111,7 @@ namespace BingImageDownload
                 {
                     intLanguage = 2;
                 }
+                bool isOverwrite = IniHelper.IniRead("DownloadSetting", "Overwrite", ShareClass._iniFilePath, null) == "true" ? true : false;
                 string strPath = IniHelper.IniRead("DownloadSetting", "DownloadPath", ShareClass._iniFilePath, null);
                 string strPathDefault = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Picture");
                 strPath = string.IsNullOrEmpty(strPath) ? strPathDefault : strPath;
@@ -173,6 +175,7 @@ namespace BingImageDownload
                 DateTime dtStart, dtEnd;
                 Stopwatch stopwatch = new Stopwatch();
                 int intBingCount = 0;
+                bool isDownloadExists = false;
                 stopwatch.Start();
                 foreach (List<string> item in dicEveryDayInformation.Values)
                 {
@@ -181,10 +184,21 @@ namespace BingImageDownload
                         strDownloadUrl = item[0] + strUrl6;
                         strNewFileName = item[3] + " " + item[intLanguage];
                         dtStart = DateTime.Now;
-                        //Task.Run(async delegate () { await ShareClass.DownloadFile(strDownloadUrl, Path.Combine(strPath, strNewFileName)).ConfigureAwait(false); });
-                        ShareClass.DownloadFile(strDownloadUrl, Path.Combine(strPath, strNewFileName));
+                        string strDownloadFile = Path.Combine(strPath, strNewFileName);
+                        if (isOverwrite && File.Exists(strDownloadFile))
+                        {
+                            strStatus = string.Format($"文件 {strNewFileName} 已存在，根据配置不重新下载.");
+                            intBingCount--;
+                            isDownloadExists = true;
+                        }
+                        else
+                        {
+                            //Task.Run(async delegate () { await ShareClass.DownloadFile(strDownloadUrl, Path.Combine(strPath, strNewFileName)).ConfigureAwait(false); });
+                            ShareClass.DownloadFile(strDownloadUrl, strDownloadFile);
+                            strStatus = string.Format($"{strNewFileName}\n下载完成." + strDownloadUrl);
+                        }
                         dtEnd = DateTime.Now;
-                        strStatus = string.Format($"{strNewFileName}\n下载完成." + strDownloadUrl + " 耗时：{0}秒", dtEnd.Subtract(dtStart).TotalSeconds);
+                        strStatus += string.Format(" 耗时：{0}秒", dtEnd.Subtract(dtStart).TotalSeconds);
                         LogHelper.Log(strStatus);
                         Console.WriteLine(strStatus);
                         isSuccess = true;
@@ -203,7 +217,7 @@ namespace BingImageDownload
                 }
                 stopwatch.Stop();
                 strStatus = string.Format("共下载Bing壁纸{0}个文件，总耗时{1}秒", intBingCount, stopwatch.Elapsed.TotalSeconds);
-                LogHelper.Log(strStatus);
+                LogHelper.Log(strStatus + "\n");
                 Console.WriteLine(strStatus);
 
                 if (intBingCount > 0)
@@ -214,6 +228,12 @@ namespace BingImageDownload
                     Console.WriteLine();
                     Console.ForegroundColor = ConsoleColor.White;
                     Console.WriteLine("文件下载完毕，请到你指定的文件夹中查看。");
+                }
+                else if (isDownloadExists)
+                {
+                    Console.WriteLine();
+                    Console.WriteLine("{0}个文件已存在，根据配置不重新下载.", intN.ToString());
+                    Console.WriteLine();
                 }
                 else
                 {
@@ -227,48 +247,59 @@ namespace BingImageDownload
                 {
                     Console.WriteLine("开始复制Windows聚焦图片……");
                     int intSpotlightCount = 0;
+                    bool isExists = false;
                     string strMessage = string.Empty;
                     string strSourcePath = Environment.ExpandEnvironmentVariables(@"%USERPROFILE%\AppData\Local\Packages\Microsoft.Windows.ContentDeliveryManager_cw5n1h2txyewy\LocalState\Assets\");
                     if (Directory.Exists(strSourcePath))
                     {
                         Directory.GetFiles(strSourcePath, "*", SearchOption.TopDirectoryOnly).ToList().ForEach(x =>
                         {
-                            string strFileName = Path.GetFileName(x);
-                            if (new FileInfo(x).Length > (1024 * 50))
+                            string strFileName = Path.GetFileName(x) + ".jpg";
+                            string strDownloadFile = Path.Combine(strPath, strFileName);
+                            if (isOverwrite && File.Exists(strDownloadFile))
                             {
-                                using (FileStream fsRead = new FileStream(x, FileMode.Open))
+                                Console.WriteLine(string.Format($"文件已存在，根据配置不重新复制."));
+                                intSpotlightCount--;
+                                isExists = true;
+                            }
+                            else
+                            {
+                                if (new FileInfo(x).Length > (1024 * 50))
                                 {
-                                    byte[] buffer = new byte[1024 * 1024 * 1];
-                                    using (FileStream fsWrite = new FileStream(Path.Combine(strPath, (strFileName + ".jpg")), FileMode.Create))
+                                    using (FileStream fsRead = new FileStream(x, FileMode.Open))
                                     {
-                                        while (true)
+                                        byte[] buffer = new byte[1024 * 1024 * 1];
+                                        using (FileStream fsWrite = new FileStream(strDownloadFile, FileMode.Create))
                                         {
-                                            int i = fsRead.Read(buffer, 0, buffer.Length);
-                                            if (i > 0)
+                                            while (true)
                                             {
-                                                fsWrite.Write(buffer, 0, i);
-                                            }
-                                            else
-                                            {
-                                                Console.WriteLine("复制完成。");
-                                                intSpotlightCount++;
-                                                break;
+                                                int i = fsRead.Read(buffer, 0, buffer.Length);
+                                                if (i > 0)
+                                                {
+                                                    fsWrite.Write(buffer, 0, i);
+                                                }
+                                                else
+                                                {
+                                                    Console.WriteLine("复制完成。");
+                                                    break;
+                                                }
                                             }
                                         }
                                     }
                                 }
                             }
+                            intSpotlightCount++;
                         });
                     }
-                    if (intSpotlightCount > 0)
+                    if (intSpotlightCount > 0 || isExists)
                     {
-                        strMessage = string.Format("Windows聚焦图片复制完成，共{0}个文件。", intSpotlightCount);
+                        strMessage = string.Format("Windows聚焦图片复制完成，共{0}个文件。", intSpotlightCount < 0 ? 0 : intSpotlightCount);
                     }
                     else
                     {
                         strMessage = "Windows聚焦目录图片不存在，请检查你的操作系统是否支持锁屏设置为Windows聚焦。";
                     }
-                    LogHelper.Log(strMessage);
+                    LogHelper.Log(strMessage + "\n");
                     Console.WriteLine(strMessage);
                     Console.WriteLine();
                 }
