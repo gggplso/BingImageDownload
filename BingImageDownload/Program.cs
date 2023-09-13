@@ -35,7 +35,7 @@ namespace BingImageDownload
                     stringBuilder.AppendLine("url5=&video=1");
                     stringBuilder.AppendLine("url6=&qlt=100");
                     stringBuilder.AppendLine("DaysAgo=0");
-                    stringBuilder.AppendLine("AFewDays=1");
+                    stringBuilder.AppendLine("AFewDays=8");
                     stringBuilder.AppendLine();
                     stringBuilder.AppendLine("[DownloadSetting]");
                     stringBuilder.AppendLine("PixelResolution=UHD");
