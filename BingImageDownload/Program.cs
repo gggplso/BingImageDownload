@@ -40,7 +40,7 @@ namespace BingImageDownload
                     stringBuilder.AppendLine("[DownloadSetting]");
                     stringBuilder.AppendLine("PixelResolution=UHD");
                     stringBuilder.AppendLine("FileNameLanguageIsEnglish=false");
-                    stringBuilder.AppendLine("Overwrite=true");
+                    stringBuilder.AppendLine("Overwrite=false");
                     stringBuilder.AppendLine("DownloadPath=");
                     stringBuilder.AppendLine();
                     stringBuilder.AppendLine("[NetworkInformation]");
@@ -185,9 +185,9 @@ namespace BingImageDownload
                         strNewFileName = item[3] + " " + item[intLanguage];
                         dtStart = DateTime.Now;
                         string strDownloadFile = Path.Combine(strPath, strNewFileName);
-                        if (isOverwrite && File.Exists(strDownloadFile))
+                        if (!isOverwrite && File.Exists(strDownloadFile))
                         {
-                            strStatus = string.Format($"文件 {strNewFileName} 已存在，根据配置不重新下载.");
+                            strStatus = string.Format($"文件 {strNewFileName} 已存在，按配置不重新下载.");
                             intBingCount--;
                             isDownloadExists = true;
                         }
@@ -256,9 +256,9 @@ namespace BingImageDownload
                         {
                             string strFileName = Path.GetFileName(x) + ".jpg";
                             string strDownloadFile = Path.Combine(strPath, strFileName);
-                            if (isOverwrite && File.Exists(strDownloadFile))
+                            if (!isOverwrite && File.Exists(strDownloadFile))
                             {
-                                Console.WriteLine(string.Format($"文件已存在，根据配置不重新复制."));
+                                Console.WriteLine(string.Format($"文件已存在，按配置不重新复制."));
                                 intSpotlightCount--;
                                 isExists = true;
                             }
