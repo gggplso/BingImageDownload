@@ -54,11 +54,12 @@ namespace BingImageDownload.Classes
         #region 日志写入方法(静态)
         public static void Log(string strPath = "Logs\\", string strContent = "", LogType logType = LogType.Infomational)
         {
-            string strInvalid = new string(Path.GetInvalidPathChars());
-            foreach (char item in strInvalid)
-            {
-                strPath = strPath.Replace(item.ToString(), "");
-            }
+            //string strInvalid = new string(Path.GetInvalidPathChars());
+            //foreach (char item in strInvalid)
+            //{
+            //    strPath = strPath.Replace(item.ToString(), "");
+            //}
+            strPath = ShareClass.RemoveInvalidChars(strPath);
             if (string.IsNullOrEmpty(strPath) || strPath.Trim().Length < 1)
             {
                 strPath = @"Logs\";

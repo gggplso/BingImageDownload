@@ -23,7 +23,7 @@ namespace BingImageDownload
                     Console.WriteLine("未找到配置文件，开始初始化程序……");
                     StringBuilder stringBuilder = new StringBuilder();
                     stringBuilder.AppendLine("【版权】仅限于壁纸使用。它们是受版权保护的图像，因此您不应将其用于其他目的，但可以将其用作桌面壁纸。");
-                    stringBuilder.AppendLine("【说明】\nurl6=&qlt=100表示下载同分辨率下的大文件，若不想下载大文件则留空。\nPixelResolution=UHD表示下载高分辨率的图片，比如3840x2160，其他值为默认的，比如1920x1080。\nFileNameLanguageIsEnglish=false表示文件名用中文，=true表示文件名用英文。\nOverwrite=true表示若有同名文件时重新下载覆盖原文件，其他值则保留原文件不重新下载。\nDownloadPath=设置保存的路径，不配置则保存到程序所在目录。\nNetWaitTime=2000表示若网络中断尝试重新连接等待的时间为2秒。NetRetryCount=5表示连接网络最大重试次数为5次。\nAutoExit=true表示程序运行完自动退出。ExitTime=3000表示退出时等待时间为3秒。");
+                    stringBuilder.AppendLine("【说明】\nurl6=&qlt=100表示下载同分辨率下的大文件，若不想下载大文件则留空。\nPixelResolution=UHD表示下载高分辨率的图片，比如3840x2160，其他值为默认的，比如1920x1080。\nFileNameLanguageIsEnglish=false表示文件名用中文，=true表示文件名用英文。\nFileNameAddTitle=true 是否加上Bing官方对图片的标题说明作为文件名。\nOverwrite=true表示若有同名文件时重新下载覆盖原文件，其他值则保留原文件不重新下载。\nDownloadPath=设置保存的路径，不配置则保存到程序所在目录。\nNetWaitTime=2000表示若网络中断尝试重新连接等待的时间为2秒。NetRetryCount=5表示连接网络最大重试次数为5次。\nAutoExit=true表示程序运行完自动退出。ExitTime=3000表示退出时等待时间为3秒。");
                     stringBuilder.AppendLine("【辅助】Win11系统添加到开机启动项：\n在本程序文件BingImageDownload.exe点击右键-发送到桌面快捷方式。\n在系统开始菜单上点击右键-运行，输入shell:startup回车确定系统自动打开一文件夹：开始菜单-程序-启动.\\Start Menu\\Programs\\Startup\n将刚才桌面上创建的快捷方式拖入到此文件夹中即可。");
                     stringBuilder.AppendLine("【额外】添加了复制Windows聚焦图片到指定的目录。\nSwitch=on表示开启");
                     stringBuilder.AppendLine();
@@ -40,6 +40,7 @@ namespace BingImageDownload
                     stringBuilder.AppendLine("[DownloadSetting]");
                     stringBuilder.AppendLine("PixelResolution=UHD");
                     stringBuilder.AppendLine("FileNameLanguageIsEnglish=false");
+                    stringBuilder.AppendLine("FileNameAddTitle=true");
                     stringBuilder.AppendLine("Overwrite=false");
                     stringBuilder.AppendLine("DownloadPath=");
                     stringBuilder.AppendLine();
@@ -110,6 +111,12 @@ namespace BingImageDownload
                 else
                 {
                     intLanguage = 2;
+                }
+                string fileNameAddTitle = IniHelper.IniRead("DownloadSetting", "FileNameAddTitle", ShareClass._iniFilePath, "true");
+                bool isFileNameAddTitle = true;
+                if (fileNameAddTitle != "true")
+                {
+                    isFileNameAddTitle = false;
                 }
                 bool isOverwrite = IniHelper.IniRead("DownloadSetting", "Overwrite", ShareClass._iniFilePath, null) == "true" ? true : false;
                 string strPath = IniHelper.IniRead("DownloadSetting", "DownloadPath", ShareClass._iniFilePath, null);
@@ -182,7 +189,11 @@ namespace BingImageDownload
                     try
                     {
                         strDownloadUrl = item[0] + strUrl6;
-                        strNewFileName = item[3] + " " + item[intLanguage];
+                        strNewFileName = item[intLanguage];
+                        if (isFileNameAddTitle)
+                        {
+                            strNewFileName = item[3] + " " + item[intLanguage];
+                        }
                         dtStart = DateTime.Now;
                         string strDownloadFile = Path.Combine(strPath, strNewFileName);
                         if (!isOverwrite && File.Exists(strDownloadFile))

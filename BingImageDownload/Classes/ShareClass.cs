@@ -37,10 +37,14 @@ namespace BingImageDownload.Classes
                             strEnglish = strEnglish.Substring(0, strEnglish.LastIndexOf('_')) + "_UHD.jpg";
                         }
                         listInformation.Add(strUrl);
+                        //去除文件名中有非法字符
+                        strEnglish = RemoveInvalidChars(strEnglish);
                         listInformation.Add(strEnglish);
                         string strChinese = bingclass.images[i].copyright.Substring(0, bingclass.images[i].copyright.IndexOf(" (© ")) + ".jpg";
+                        strChinese = RemoveInvalidChars(strChinese);
                         listInformation.Add(strChinese);
-                        listInformation.Add(bingclass.images[i].title);
+                        //因为说明也会加入到文件名中，所以也需要去除非法字符
+                        listInformation.Add(RemoveInvalidChars(bingclass.images[i].title));
                         dicEveryDayInformation.Add(bingclass.images[i].enddate, listInformation);
                     }
                 }
@@ -83,6 +87,26 @@ namespace BingImageDownload.Classes
             {
                 LogHelper.GetExceptionLocation(e1);
             }
+        }
+        /// <summary>
+        /// 去除不允许在路径、文件名中使用的字符
+        /// </summary>
+        /// <param name="strSource">需要去除的源字符串</param>
+        /// <returns></returns>
+        public static string RemoveInvalidChars(string strSource)
+        {
+            string strPathInvalid = new string(Path.GetInvalidPathChars());
+            string strFileInvalid = new string(Path.GetInvalidFileNameChars());
+
+            foreach (char item in strPathInvalid)
+            {
+                strSource = strSource.Replace(item.ToString(), "");
+            }
+            foreach (char item in strFileInvalid)
+            {
+                strSource = strSource.Replace(item.ToString(), "");
+            }
+            return strSource;
         }
     }
 }
