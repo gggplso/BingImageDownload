@@ -195,6 +195,8 @@ namespace BingImageDownload
                             strNewFileName = item[3] + " " + item[intLanguage];
                         }
                         dtStart = DateTime.Now;
+                        //去除文件名中的非法字符
+                        strNewFileName = ShareClass.RemoveInvalidChars(strNewFileName);
                         string strDownloadFile = Path.Combine(strPath, strNewFileName);
                         if (!isOverwrite && File.Exists(strDownloadFile))
                         {
