@@ -267,7 +267,7 @@ namespace BingImageDownload
                     {
                         Directory.GetFiles(strSourcePath, "*", SearchOption.TopDirectoryOnly).ToList().ForEach(x =>
                         {
-                            string strFileName = Path.GetFileName(x) + ".jpg";
+                            string strFileName = Path.GetFileName(x) + ".png";
                             string strDownloadFile = Path.Combine(strPath, strFileName);
                             if (!isOverwrite && File.Exists(strDownloadFile))
                             {
