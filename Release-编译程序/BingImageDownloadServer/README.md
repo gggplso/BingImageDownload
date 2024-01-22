@@ -82,4 +82,7 @@ Win10系统之后，锁屏设置里有个功能是显示Window聚焦图片，系
 ![参数设置](./Logs/AppSetting01.png)
 ![参数设置](./Logs/AppSetting02.png)
 ![参数设置](./Logs/AppSetting03.png)
+
+## 服务和进程
 ![服务](./Logs/Server01.png)
+![进程](./Logs/Server02.png)

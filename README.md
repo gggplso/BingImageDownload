@@ -94,6 +94,13 @@ Win10系统之后，锁屏设置里有个功能是显示Window聚焦图片，系
     因此，特意添加一个配置文件FileNameAddTitle=true若有不想将官方标题也作为文件名的，可以改为False。
     FileNameAddTitle=false  （另：FileNameLanguageIsEnglish=true 以英文名保存）  
 </details>
+<details>
+    <summary>
+        2024-01-19：添加Windows服务，通过搭建系统服务来实现后台无感自动下载Bing每日图片及复制Windows聚焦图片到指定目录
+    </summary>
+        Windows服务是(.NET Framework)，外加一个WinForm窗体来可视化配置参数设置。   
+        依赖框架，Release版本详见：\Release-编译程序\BingImageDownloadServer
+</details>
 
 
 ## 其他  
