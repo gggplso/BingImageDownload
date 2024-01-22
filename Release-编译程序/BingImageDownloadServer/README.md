@@ -10,18 +10,8 @@ Bing Image Download 必应每日壁纸下载
 本程序为C#编写的Windows服务，通过加载Windows系统服务WindowsServiceBingImageAutoDownload.exe来定时运行下载图片，具体参数可以通过WinFormsAppSetting.exe来设定下载参数，具体如下：
 
 【说明】  
- 
-`DaysAgo=0` 取值0-7，表示取几天之前的图片，0为今天。   
-`AFewDays=8` 取值1-8，表示当前下载几天的图片，1为只下载今天的图片。  
-所以这两个配置参数设置结合，理论上可以下载15天的图片。(听说Bing以前提供的天数更多，现在限制了访问，所以不排除Bing官方以后可能会调整)   
-`PixelResolution=UHD` 表示下载高分辨率的图片，比如3840x2160，其他值则是下载默认的，比如1920x1080。  
-`FileNameLanguageIsChinese=true` 表示下载的默认文件名用中文，=false则表示文件名用英文。  
-`FileNameAddTitle=true` 是否加上Bing官方对图片的标题说明作为文件名。  
-`Overwrite=true`表示若有同名文件时重新下载覆盖原文件，其他值(如false)则保留原文件不重新下载。  
-`DownloadPath=` 设置保存的路径，不配置(等号右侧留空)则表示下载文件保存到程序所在的Picture目录。  
-`NetWaitTime=2000` 表示若网络中断尝试重新连接等待的时间为2秒。  
-`NetRetryCount=5` 表示连接网络最大重试次数为5次。  
-`Switch=on` 表示开启复制Windows聚焦的图片到指定目录。  
+详见`WinFormsAppSetting.exe`页面中的参数说明，包括了配置项后面的说明，以及鼠标悬浮提示。
+![配置截图](https://gitee.com/gggplso/MarkdownPhotos/raw/master/Photos/BingImageDownloadServer/AppSetting02.png)
 
 ## 安装和卸载  
 解压文件  
@@ -79,10 +69,10 @@ Win10系统之后，锁屏设置里有个功能是显示Window聚焦图片，系
 2024-01-01：本人是刚接触C#的新手，看了基础入门教程和网上其他人的代码，学习之作，若有错漏之处，请指点斧正，不胜感激。  
 
 ## 配置截图说明  
-![参数设置](./Logs/AppSetting01.png)
-![参数设置](./Logs/AppSetting02.png)
-![参数设置](./Logs/AppSetting03.png)
+![参数设置](https://gitee.com/gggplso/MarkdownPhotos/raw/master/Photos/BingImageDownloadServer/AppSetting01.png)
+![参数设置](https://gitee.com/gggplso/MarkdownPhotos/raw/master/Photos/BingImageDownloadServer/AppSetting02.png)
+![参数设置](https://gitee.com/gggplso/MarkdownPhotos/raw/master/Photos/BingImageDownloadServer/AppSetting03.png)
 
 ## 服务和进程
-![服务](./Logs/Server01.png)
-![进程](./Logs/Server02.png)
+![服务](https://gitee.com/gggplso/MarkdownPhotos/raw/master/Photos/BingImageDownloadServer/service01.png)
+![进程](https://gitee.com/gggplso/MarkdownPhotos/raw/master/Photos/BingImageDownloadServer/Taskmgr01.png)
