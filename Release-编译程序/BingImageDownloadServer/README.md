@@ -7,10 +7,10 @@ Bing Image Download 必应每日壁纸下载
 本程序采用的是Bing官方公开的接口，是通过JSON数据提取下载路径，从Bing官网下载图片。不排除以后下载会因Bing的调整而失效。
 
 ## 配置文件说明
-本程序为C#编写的Windows服务，通过加载Windows系统服务WindowsServiceBingImageAutoDownload.exe来定时运行下载图片，具体参数可以通过WinFormsAppSetting.exe来设定下载参数，具体如下：
+本程序为C#编写的Windows服务，通过加载Windows系统服务WindowsServiceBingImageAutoDownload.exe来定时运行下载图片，具体参数可以通过WindowsFormsAppSetting.exe来设定下载参数，具体如下：
 
 【说明】  
-详见`WinFormsAppSetting.exe`页面中的参数说明，包括了配置项后面的说明，以及鼠标悬浮提示。
+详见`WindowsFormsAppSetting.exe`页面中的参数说明，包括了配置项后面的说明，以及鼠标悬浮提示。
 ![配置截图](https://gitee.com/gggplso/MarkdownPhotos/raw/master/Photos/BingImageDownloadServer/AppSetting02.png)
 
 ## 安装和卸载  
@@ -24,7 +24,7 @@ Bing Image Download 必应每日壁纸下载
 
 ## 辅助说明  
 > 可以将下载文件直接配置到您电脑壁纸所在的目录中，每天它自动下载就好。  
- > * 具体下载的一些配置参数可以通过程序提供的设置文件`WinFormsAppSetting.exe`来配置  
+ > * 具体下载的一些配置参数可以通过程序提供的设置文件`WindowsFormsAppSetting.exe`来配置  
 
 【辅助】  
  > 若不想用Windows服务，也可以用另一个程序，通过命令控制台来下载图片，详见gitee或github我上传的另一个程序  
@@ -34,7 +34,7 @@ Bing Image Download 必应每日壁纸下载
 【额外】  
 添加了复制Windows聚焦图片到指定的目录。  
 Win10系统之后，锁屏设置里有个功能是显示Window聚焦图片，系统会每天下载不同的图片到Windows目录中。因为系统目录藏的有点深，本功能只是将其中大于`50KB`的图片文件复制到你指定的目录，并不负责下载更新，一切以您的系统设置为基准。  
-前提是准确设置系统聚焦所在目录\Assets\，设置文件`WinFormsAppSetting.exe`点击“浏览”会自动识别定位，若无法识别需人工干预。  
+前提是准确设置系统聚焦所在目录\Assets\，设置文件`WindowsFormsAppSetting.exe`点击“浏览”会自动识别定位，若无法识别需人工干预。  
 
 
 ## 修改日志  
