@@ -50,8 +50,15 @@ Win10系统之后，锁屏设置里有个功能是显示Window聚焦图片，系
 </details>
 <details>
     <summary>
-        2024-01-19：完善参数配置设定，试运行服务，开始下载Bing图片和复制Windows聚焦图片
+        2024-01-19：完善参数配置设定，试运行服务。
     </summary>
+        完善参数配置设定，试运行服务，开始下载Bing图片和复制Windows聚焦图片
+</details>
+<details>
+    <summary>
+        2024-01-25：重写编写参数配置的WinForm窗体。
+    </summary>
+        因用.Net8编写的WinForm窗体需要.NetCore的运行时，所以改用老版的Framework重新写了参数配置窗体。
 </details>
 
 
@@ -66,7 +73,7 @@ Win10系统之后，锁屏设置里有个功能是显示Window聚焦图片，系
 
 程序运行记录了日志，大家可以通过日志文件获取到图片的下载Bing官方源路径。  
 
-2024-01-01：本人是刚接触C#的新手，看了基础入门教程和网上其他人的代码，学习之作，若有错漏之处，请指点斧正，不胜感激。  
+2023-08-27：本人是刚接触C#的新手，看了基础入门教程和网上其他人的代码，学习之作，若有错漏之处，请指点斧正，不胜感激。  
 
 ## 配置截图说明  
 ![参数设置](https://gitee.com/gggplso/MarkdownPhotos/raw/master/Photos/BingImageDownloadServer/AppSetting01.png)
@@ -75,4 +82,7 @@ Win10系统之后，锁屏设置里有个功能是显示Window聚焦图片，系
 
 ## 服务和进程
 ![服务](https://gitee.com/gggplso/MarkdownPhotos/raw/master/Photos/BingImageDownloadServer/service01.png)
-![进程](https://gitee.com/gggplso/MarkdownPhotos/raw/master/Photos/BingImageDownloadServer/Taskmgr01.png)
+![进程](https://gitee.com/gggplso/MarkdownPhotos/raw/master/Photos/BingImageDownloadServer/Taskmgr01.png)  
+
+## 运行结果
+![结果](https://gitee.com/gggplso/MarkdownPhotos/raw/master/Photos/BingImageDownloadServer/Result01.png)
