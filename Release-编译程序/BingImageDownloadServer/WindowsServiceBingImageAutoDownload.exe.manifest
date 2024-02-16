@@ -55,14 +55,14 @@
     </dependentAssembly>
   </dependency>
   <dependency>
-    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="WindowsServiceBingImageAutoDownload.exe" size="246744">
+    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="WindowsServiceBingImageAutoDownload.exe" size="247256">
       <assemblyIdentity name="WindowsServiceBingImageAutoDownload" version="1.0.0.0" language="neutral" processorArchitecture="msil" />
       <hash>
         <dsig:Transforms>
           <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
         </dsig:Transforms>
         <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
-        <dsig:DigestValue>m217ly0Vg+pnTiJDN4a2fPK3LfqrN+MAZquoxuf8qDY=</dsig:DigestValue>
+        <dsig:DigestValue>TOwYau+U0QXzicKKUUOkMxjNOhurtM4Gz1fKAt9hkCU=</dsig:DigestValue>
       </hash>
     </dependentAssembly>
   </dependency>
